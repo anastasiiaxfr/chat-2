@@ -1,5 +1,6 @@
-import { UserRound, Plus, User2, ChevronDown, SearchIcon } from "lucide-react";
+import { User2, ChevronDown, SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
 import {
     InputGroup,
     InputGroupAddon,
@@ -12,17 +13,17 @@ import {
     SidebarGroup,
     SidebarGroupContent,
     SidebarGroupLabel,
-    SidebarMenu,
     SidebarMenuButton,
-    SidebarMenuItem,
     SidebarHeader,
 } from "@/components/ui/sidebar";
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+import ChatList from "./chat-list";
+import AddUserModal from "./chat-add-user-modal";
 import { useUserStore } from "../../lib/userStore";
 import { auth } from "../../lib/firebase";
 import { signOut } from "firebase/auth";
@@ -48,7 +49,7 @@ export function AppSidebar() {
                             <div className="chat-user-avatar">
                                 {currentUser?.avatar ? (
                                     <img
-                                        className="object-cover w-14 h-14 min-w-14 rounded-full"
+                                        className="object-cover w-12 h-12 min-w-12 rounded-full"
                                         src={currentUser?.avatar}
                                         alt={currentUser.username}
                                     />
@@ -86,9 +87,7 @@ export function AppSidebar() {
                             </InputGroupAddon>
                             <InputGroupInput placeholder="Search..." />
                         </InputGroup>
-                        <Button type="submit">
-                            <Plus />
-                        </Button>
+                        <AddUserModal />
                     </div>
                 </div>
             </SidebarHeader>
@@ -98,132 +97,7 @@ export function AppSidebar() {
                         Previous Chats
                     </SidebarGroupLabel>
                     <SidebarGroupContent>
-                        <SidebarMenu className="mt-4 grid gap-4">
-                            <SidebarMenuItem>
-                                <SidebarMenuButton asChild>
-                                    <a href="#" className="chat-user-list">
-                                        {/* <img
-                                    src=""
-                                    alt=""
-                                    width="30"
-                                    height="30"
-                                    className="chat-user-list-avatar"
-                                /> */}
-                                        <div className="chat-user-list-avatar">
-                                            <UserRound />
-                                        </div>
-                                        <div>
-                                            <p className="chat-user-list-title">
-                                                John Doe
-                                            </p>
-                                            <p className="chat-user-list-description">
-                                                Lorem ipsum dolor sit amet.
-                                            </p>
-                                        </div>
-                                    </a>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-
-                            <SidebarMenuItem>
-                                <SidebarMenuButton asChild>
-                                    <a href="#" className="chat-user-list">
-                                        {/* <img
-                                    src=""
-                                    alt=""
-                                    width="30"
-                                    height="30"
-                                    className="chat-user-list-avatar"
-                                /> */}
-                                        <div className="chat-user-list-avatar">
-                                            <UserRound />
-                                        </div>
-                                        <div>
-                                            <p className="chat-user-list-title">
-                                                John Doe
-                                            </p>
-                                            <p className="chat-user-list-description">
-                                                Lorem ipsum dolor sit amet.
-                                            </p>
-                                        </div>
-                                    </a>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-
-                            <SidebarMenuItem>
-                                <SidebarMenuButton asChild>
-                                    <a href="#" className="chat-user-list">
-                                        {/* <img
-                                    src=""
-                                    alt=""
-                                    width="30"
-                                    height="30"
-                                    className="chat-user-list-avatar"
-                                /> */}
-                                        <div className="chat-user-list-avatar">
-                                            <UserRound />
-                                        </div>
-                                        <div>
-                                            <p className="chat-user-list-title">
-                                                John Doe
-                                            </p>
-                                            <p className="chat-user-list-description">
-                                                Lorem ipsum dolor sit amet.
-                                            </p>
-                                        </div>
-                                    </a>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-
-                            <SidebarMenuItem>
-                                <SidebarMenuButton asChild>
-                                    <a href="#" className="chat-user-list">
-                                        {/* <img
-                                    src=""
-                                    alt=""
-                                    width="30"
-                                    height="30"
-                                    className="chat-user-list-avatar"
-                                /> */}
-                                        <div className="chat-user-list-avatar">
-                                            <UserRound />
-                                        </div>
-                                        <div>
-                                            <p className="chat-user-list-title">
-                                                John Doe
-                                            </p>
-                                            <p className="chat-user-list-description">
-                                                Lorem ipsum dolor sit amet.
-                                            </p>
-                                        </div>
-                                    </a>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-
-                            <SidebarMenuItem>
-                                <SidebarMenuButton asChild>
-                                    <a href="#" className="chat-user-list">
-                                        {/* <img
-                                    src=""
-                                    alt=""
-                                    width="30"
-                                    height="30"
-                                    className="chat-user-list-avatar"
-                                /> */}
-                                        <div className="chat-user-list-avatar">
-                                            <UserRound />
-                                        </div>
-                                        <div>
-                                            <p className="chat-user-list-title">
-                                                John Doe
-                                            </p>
-                                            <p className="chat-user-list-description">
-                                                Lorem ipsum dolor sit amet.
-                                            </p>
-                                        </div>
-                                    </a>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        </SidebarMenu>
+                        <ChatList />
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
