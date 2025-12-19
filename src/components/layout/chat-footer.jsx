@@ -34,14 +34,12 @@ function ChatFooter() {
             });
 
             const userIDs = [currentUser.id, user.id];
-
             for (const id of userIDs) {
                 const userChatRef = doc(db, "userchats", id);
                 const userChatSnapshot = await getDoc(userChatRef);
 
                 if (userChatSnapshot.exists()) {
                     const userChatData = userChatSnapshot.data();
-
                     const chatIndex = userChatData.chats.findIndex(
                         (c) => c.chatId === chatId
                     );
@@ -65,14 +63,22 @@ function ChatFooter() {
         }
     };
 
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            handleSend();
+        }
+    };
+
     return (
-        <div className="chat-footer">
+        <div className="chat-footer flex gap-2 p-2">
             <Textarea
                 placeholder="Type your message here."
-                className="border-white/20 bg-gray-700 max-h-40"
-                rows="2"
+                className="border-white/20 bg-gray-700 max-h-40 flex-1 resize-none p-2 rounded"
+                rows={2}
                 value={text}
                 onChange={(e) => setText(e.target.value)}
+                onKeyDown={handleKeyDown}
             />
             <Button onClick={handleSend}>Send</Button>
         </div>
