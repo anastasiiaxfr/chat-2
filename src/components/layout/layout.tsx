@@ -15,7 +15,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         const unSub = onAuthStateChanged(auth, (user) => {
-            fetchUserInfo(user.uid);
+            fetchUserInfo(user?.uid);
         });
 
         return () => {

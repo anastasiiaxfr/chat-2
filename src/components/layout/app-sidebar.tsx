@@ -23,8 +23,22 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useUserStore } from "../../lib/userStore";
+import { auth } from "../../lib/firebase";
+import { signOut } from "firebase/auth";
 
 export function AppSidebar() {
+    const { currentUser } = useUserStore();
+
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            console.log("User signed out");
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
+    };
+
     return (
         <Sidebar className="absolute border-blue-800 h-full ">
             <SidebarHeader className="bg-blue-800 text-white ">
@@ -32,12 +46,20 @@ export function AppSidebar() {
                     <DropdownMenuTrigger asChild>
                         <SidebarMenuButton className="relative !h-auto focus:appearance-none focus:outline-0 focus:border-0 focus:shadow-none focus-within:shadow-none">
                             <div className="chat-user-avatar">
-                                <User2 />
+                                {currentUser?.avatar ? (
+                                    <img
+                                        className="object-cover w-14 h-14 min-w-14 rounded-full"
+                                        src={currentUser?.avatar}
+                                        alt={currentUser.username}
+                                    />
+                                ) : (
+                                    <User2 />
+                                )}
                             </div>
                             <div>
-                                <p className="my-0">Emma Simpson</p>
+                                <p className="my-0">{currentUser.username}</p>
                                 <p className="text-xs my-0 opacity-50">
-                                    emma.simpson.@gmail.com
+                                    {currentUser.email}
                                 </p>
                             </div>
                             <ChevronDown className="ml-auto absolute right-2 top-4 bottom-0" />
@@ -45,11 +67,14 @@ export function AppSidebar() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
                         side="top"
-                        className="w-[--radix-popper-anchor-width] border-0"
+                        className="w-full border-0 p-0"
                     >
-                        <DropdownMenuItem>
-                            <span>Log out</span>
-                        </DropdownMenuItem>
+                        <Button
+                            onClick={handleLogout}
+                            className="bg-transparent text-black w-full hover:bg-blue-700 hover:text-white"
+                        >
+                            Log out
+                        </Button>
                     </DropdownMenuContent>
                 </DropdownMenu>
 
