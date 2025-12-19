@@ -21,6 +21,7 @@ import {
     query,
     where,
     getDocs,
+    getDoc,
     setDoc,
     serverTimestamp,
     doc,
@@ -59,38 +60,61 @@ export default function AddUserModal() {
     };
 
     const handleAddUser = async () => {
-        const chatRef = collection(db, "chats");
-        const userChatsRef = collection(db, "userchats");
+        if (!user) return;
 
         try {
-            const newChatRef = doc(chatRef);
+            const currentUserChatsDoc = await getDoc(
+                doc(db, "userchats", currentUser.id)
+            );
+            const otherUserChatsDoc = await getDoc(
+                doc(db, "userchats", user.id)
+            );
 
+            const currentUserChats = currentUserChatsDoc.exists()
+                ? currentUserChatsDoc.data().chats
+                : [];
+            const otherUserChats = otherUserChatsDoc.exists()
+                ? otherUserChatsDoc.data().chats
+                : [];
+
+            const existing = currentUserChats.find((chat) =>
+                otherUserChats.some(
+                    (otherChat) => otherChat.chatId === chat.chatId
+                )
+            );
+
+            if (existing) {
+                console.log("Chat already exists with ID:", existing.chatId);
+                return;
+            }
+
+            const newChatRef = doc(collection(db, "chats"));
             await setDoc(newChatRef, {
                 createdAt: serverTimestamp(),
+                members: [currentUser.id, user.id],
                 messages: [],
             });
 
-            console.log(newChatRef.id);
+            const chatId = newChatRef.id;
 
-            await updateDoc(doc(userChatsRef, user.id), {
+            await updateDoc(doc(db, "userchats", currentUser.id), {
                 chats: arrayUnion({
-                    chatId: newChatRef.id,
-                    lastMessage: "",
-                    receiverId: currentUser.id,
-                    updatedAt: Date.now(),
-                }),
-            });
-
-            await updateDoc(doc(userChatsRef, currentUser.id), {
-                chats: arrayUnion({
-                    chatId: newChatRef.id,
-                    lastMessage: "",
+                    chatId,
                     receiverId: user.id,
-                    updatedAt: Date.now(),
+                    lastMessage: "",
                 }),
             });
+            await updateDoc(doc(db, "userchats", user.id), {
+                chats: arrayUnion({
+                    chatId,
+                    receiverId: currentUser.id,
+                    lastMessage: "",
+                }),
+            });
+
+            console.log("Created new chat:", chatId);
         } catch (err) {
-            console.log(err);
+            console.error("Error adding user:", err);
         }
     };
 

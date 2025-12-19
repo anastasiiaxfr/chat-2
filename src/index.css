@@ -180,20 +180,24 @@
   .chat-message-meta {
     @apply text-xs mt-4 opacity-50 text-right flex items-center gap-4 justify-between;
 
+    p {
+      @apply ml-auto;
+    }
+
     button {
       @apply cursor-pointer hover:!bg-blue-800;
     }
   }
 
   .chat-messages {
-    @apply grid gap-10 mt-10;
+    @apply grid gap-5 mt-10 max-h-150;
   }
 
   .chat-message {
-    @apply w-[80%] text-sm;
+    @apply w-[80%] text-sm p-4 rounded-xl bg-gray-700/20;
 
     &.answer {
-      @apply ml-auto;
+      @apply ml-auto bg-black/10;
     }
   }
 
