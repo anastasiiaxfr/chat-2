@@ -212,4 +212,12 @@
   [data-slot="sidebar"] {
     @apply !border-0;
   }
+
+  .form-login, .form-register {
+    button {
+      &:disabled {
+        @apply cursor-not-allowed opacity-50;
+      }
+    }
+  }
 }

@@ -17,6 +17,7 @@ import {
     createUserWithEmailAndPassword,
     GoogleAuthProvider,
     signInWithPopup,
+    signInWithEmailAndPassword,
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 
@@ -27,14 +28,28 @@ const provider = new GoogleAuthProvider();
 function AuthPage() {
     const [tab, setTab] = useState("login");
     const registerFormRef = useRef();
+    const [loading, setLoading] = useState(false);
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        toast.info("Login feature not implemented yet");
+        setLoading(true);
+        const formData = new FormData(e.target);
+        const { email, password } = Object.fromEntries(formData);
+
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+        } catch (err) {
+            console.log(err);
+            toast.error(err.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleRegisterWithGoogle = async (e) => {
+    const handleAuthWithGoogle = async (e) => {
         e.preventDefault();
+        setLoading(true);
+
         try {
             const result = await signInWithPopup(auth, provider);
 
@@ -61,12 +76,17 @@ function AuthPage() {
             }
         } catch (error) {
             toast.error("Google sign-in failed: " + error.message);
+            if (registerFormRef.current) {
+                registerFormRef.current.reset();
+            }
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleRegister = async (e) => {
         e.preventDefault();
-
+        setLoading(true);
         const formData = new FormData(e.target);
         const { username, email, password } = Object.fromEntries(formData);
 
@@ -93,6 +113,11 @@ function AuthPage() {
             }
         } catch (err) {
             toast.error("Registration failed: " + err.message);
+            if (registerFormRef.current) {
+                registerFormRef.current.reset();
+            }
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -125,6 +150,7 @@ function AuthPage() {
                                 <Button
                                     variant="link"
                                     onClick={() => setTab("register")}
+                                    disabled={loading}
                                 >
                                     Sign Up
                                 </Button>
@@ -132,7 +158,7 @@ function AuthPage() {
                         </CardHeader>
 
                         <CardContent>
-                            <form onSubmit={handleLogin}>
+                            <form onSubmit={handleLogin} className="from-login">
                                 <div className="flex flex-col gap-6">
                                     <div className="grid gap-2">
                                         <Label htmlFor="email">Email</Label>
@@ -158,13 +184,17 @@ function AuthPage() {
                                 </div>
 
                                 <div className="mt-8 grid gap-2">
-                                    <Button type="submit" className="w-full">
-                                        Login
+                                    <Button
+                                        type="submit"
+                                        className="w-full"
+                                        disabled={loading}
+                                    >
+                                        {loading ? "Loading" : " Login"}
                                     </Button>
                                     <Button
                                         variant="outline"
                                         className="w-full"
-                                        onClick={handleRegisterWithGoogle}
+                                        onClick={handleAuthWithGoogle}
                                     >
                                         Login with Google
                                     </Button>
@@ -196,6 +226,7 @@ function AuthPage() {
                             <form
                                 onSubmit={handleRegister}
                                 ref={registerFormRef}
+                                className="form-register"
                             >
                                 <div className="flex flex-col gap-6">
                                     <div className="grid gap-2">
@@ -234,13 +265,17 @@ function AuthPage() {
                                 </div>
 
                                 <div className="mt-8 grid gap-2">
-                                    <Button type="submit" className="w-full">
-                                        Register
+                                    <Button
+                                        type="submit"
+                                        className="w-full"
+                                        disabled={loading}
+                                    >
+                                        {loading ? "Loading" : "Register"}
                                     </Button>
                                     <Button
                                         variant="outline"
                                         className="w-full"
-                                        onClick={handleRegisterWithGoogle}
+                                        onClick={handleAuthWithGoogle}
                                     >
                                         Register with Google
                                     </Button>
