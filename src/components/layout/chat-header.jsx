@@ -5,9 +5,7 @@ import { useChatStore } from "../../lib/chatStore";
 
 function ChatHeader() {
     const { currentUser } = useUserStore();
-    const { user: chatUser } = useChatStore(); // the other user in the chat
-
-    // Fallback if no chat selected
+    const { user: chatUser } = useChatStore();
     const displayUser = chatUser || currentUser;
 
     return (
