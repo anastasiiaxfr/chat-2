@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { User2, ChevronDown, SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -16,6 +17,7 @@ import {
     SidebarMenuButton,
     SidebarHeader,
 } from "@/components/ui/sidebar";
+
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -30,6 +32,7 @@ import { signOut } from "firebase/auth";
 
 export function AppSidebar() {
     const { currentUser } = useUserStore();
+    const [search, setSearch] = useState("");
 
     const handleLogout = async () => {
         try {
@@ -41,11 +44,11 @@ export function AppSidebar() {
     };
 
     return (
-        <Sidebar className="absolute border-blue-800 h-full ">
-            <SidebarHeader className="bg-blue-800 text-white ">
+        <Sidebar className="absolute border-blue-800 h-full">
+            <SidebarHeader className="bg-blue-800 text-white">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <SidebarMenuButton className="relative !h-auto focus:appearance-none focus:outline-0 focus:border-0 focus:shadow-none focus-within:shadow-none">
+                        <SidebarMenuButton className="relative !h-auto">
                             <div className="chat-user-avatar">
                                 {currentUser?.avatar ? (
                                     <img
@@ -81,23 +84,28 @@ export function AppSidebar() {
 
                 <div className="chatt-add-user border-y border-white/20 py-4">
                     <div className="flex w-full max-w-sm items-center gap-2">
-                        <InputGroup className="border-white/20">
+                        <InputGroup className="border-white/20 flex-1">
                             <InputGroupAddon>
                                 <SearchIcon />
                             </InputGroupAddon>
-                            <InputGroupInput placeholder="Search..." />
+                            <InputGroupInput
+                                placeholder="Search..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                            />
                         </InputGroup>
                         <AddUserModal />
                     </div>
                 </div>
             </SidebarHeader>
+
             <SidebarContent className="sidabar-content bg-blue-800 text-white flex-1 h-full">
                 <SidebarGroup>
                     <SidebarGroupLabel className="text-inherit">
                         Previous Chats
                     </SidebarGroupLabel>
                     <SidebarGroupContent>
-                        <ChatList />
+                        <ChatList search={search} />
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
