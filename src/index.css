@@ -118,7 +118,8 @@
     @apply border-border outline-ring/50;
   }
 
-  html, body {
+  html,
+  body {
     @apply h-full;
   }
 
@@ -185,7 +186,7 @@
   }
 
   .chat-messages {
-    @apply grid gap-10 mt-10; 
+    @apply grid gap-10 mt-10;
   }
 
   .chat-message {
