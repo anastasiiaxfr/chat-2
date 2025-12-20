@@ -35,7 +35,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         <AppSidebar />
                         <main className="p-4 w-full flex flex-col">
                             <Header />
-                            <div className="px-10 mb-10 overflow-y-auto">
+                            <div className="px-0 lg:px-10 mb-10 overflow-y-auto">
                                 {children}
                             </div>
                             <Footer />

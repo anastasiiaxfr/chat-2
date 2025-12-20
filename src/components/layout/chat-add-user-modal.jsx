@@ -97,20 +97,37 @@ export default function AddUserModal() {
 
             const chatId = newChatRef.id;
 
-            await updateDoc(doc(db, "userchats", currentUser.id), {
-                chats: arrayUnion({
-                    chatId,
-                    receiverId: user.id,
-                    lastMessage: "",
-                }),
-            });
-            await updateDoc(doc(db, "userchats", user.id), {
-                chats: arrayUnion({
-                    chatId,
-                    receiverId: currentUser.id,
-                    lastMessage: "",
-                }),
-            });
+            await setDoc(
+                doc(db, "userchats", currentUser.id),
+                {
+                    chats: arrayUnion({
+                        chatId,
+                        receiverId: user.id,
+                        lastMessage: "",
+                    }),
+                },
+                { merge: true }
+            );
+
+            try {
+                console.log("Receiver ID:", user.id);
+
+                await setDoc(
+                    doc(db, "userchats", user.id),
+                    {
+                        chats: arrayUnion({
+                            chatId,
+                            receiverId: currentUser.id,
+                            lastMessage: "",
+                        }),
+                    },
+                    { merge: true }
+                );
+
+                console.log("Receiver chat written");
+            } catch (e) {
+                console.error("Receiver write failed:", e);
+            }
 
             console.log("Created new chat:", chatId);
         } catch (err) {
@@ -135,7 +152,7 @@ export default function AddUserModal() {
                             <SearchIcon />
                         </InputGroupAddon>
                         <InputGroupInput
-                            placeholder="Search..."
+                            placeholder="Search user by username..."
                             name="username"
                         />
                     </InputGroup>
@@ -146,7 +163,7 @@ export default function AddUserModal() {
                 {searchError && <p className="text-xs mt-2">{searchError}</p>}
 
                 {user && (
-                    <div className="flex gap-3 justify-between mt-4">
+                    <div className="flex flex-wrap gap-3 justify-between mt-4">
                         <div className="chat-user-avatar">
                             {user.avatar ? (
                                 <img
@@ -163,7 +180,9 @@ export default function AddUserModal() {
                             <p className="text-xs opacity-50">{user.email}</p>
                         </div>
                         <DialogClose asChild>
-                            <Button onClick={handleAddUser}>Add User</Button>
+                            <Button onClick={handleAddUser} className="w-full">
+                                Add User
+                            </Button>
                         </DialogClose>
                     </div>
                 )}

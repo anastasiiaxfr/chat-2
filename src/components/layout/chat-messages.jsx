@@ -91,19 +91,19 @@ export default function ChatMessages() {
                 return (
                     <div
                         key={message?.createdAt || Math.random()}
-                        className={`chat-message max-w-[70%] rounded-xl break-words 
+                        className={`chat-message w-full lg:max-w-[70%] rounded-xl break-words 
                             ${
                                 isMine ? " self-end bg-black/10" : " self-start"
                             }`}
                     >
                         {isEditing ? (
-                            <div className="flex gap-2 items-center">
+                            <div className="flex flex-wrap gap-2 items-center">
                                 <input
                                     type="text"
                                     onChange={(e) =>
                                         setEditingText(e.target.value)
                                     }
-                                    className="border p-1 rounded flex-1 text-white"
+                                    className="border border-white/20 p-1 rounded flex-1 text-white"
                                 />
                                 <Button
                                     size="icon"
